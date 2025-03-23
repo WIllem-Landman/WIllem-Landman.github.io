@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cape Metropole Subdistrict Finder</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    input { padding: 8px; width: 300px; }
+    button { padding: 8px 12px; margin-left: 10px; }
+    #result { margin-top: 20px; font-weight: bold; white-space: pre-line; }
+    datalist { max-height: 150px; overflow-y: auto; }
+  </style>
+</head>
+<body>
+  <h2>Find the Subdistrict</h2>
+  <input list="suggestions" type="text" id="inputArea" placeholder="Enter suburb name or postal code">
+  <datalist id="suggestions"></datalist>
+  <button onclick="findSubdistrict()">Find Subdistrict</button>
+  <p id="result"></p>
+
+  <script>
+    const data = {
+      "Northern": [
+        { suburb: "Kraaifontein", postalCode: "7570" },
+        { suburb: "Bothasig", postalCode: "7441" },
+        { suburb: "Bloekombos", postalCode: "7570" },
+        { suburb: "Wallacedene", postalCode: "7570" },
+        { suburb: "Durbanville", postalCode: "7550" },
+        { suburb: "Fisantekraal", postalCode: "7550" },
+        { suburb: "Klipheuwel" },
+        { suburb: "Scottsdene", postalCode: "7570" },
+        { suburb: "Scottsville", postalCode: "7530" },
+        { suburb: "Brackenfell", postalCode: "7560" },
+        { suburb: "Northpine", postalCode: "7560" },
+        { suburb: "De Novo" }
+      ],
+      "Mitchells Plain": [
+        { suburb: "Eastridge", postalCode: "7785" },
+        { suburb: "Beacon Valley", postalCode: "7785" },
+        { suburb: "Portlands", postalCode: "7785" },
+        { suburb: "Westridge", postalCode: "7798" },
+        { suburb: "London Village" },
+        { suburb: "Lost City" },
+        { suburb: "Colorado Park", postalCode: "7785" },
+        { suburb: "Lentegeur", postalCode: "7786" },
+        { suburb: "Bay View" },
+        { suburb: "Tafelsig", postalCode: "7785" },
+        { suburb: "Browns Farm" },
+        { suburb: "Mandalay", postalCode: "7785" },
+        { suburb: "Woodlands", postalCode: "7785" }
+      ],
+      "Tygerberg": [
+        { suburb: "Bellville", postalCode: "7530" },
+        { suburb: "Parow", postalCode: "7500" },
+        { suburb: "Goodwood", postalCode: "7460" },
+        { suburb: "Monte Vista", postalCode: "7460" },
+        { suburb: "Bishop Lavis", postalCode: "7490" },
+        { suburb: "Bonteheuwel", postalCode: "7764" },
+        { suburb: "Ravensmead", postalCode: "7493" },
+        { suburb: "Belhar", postalCode: "7493" },
+        { suburb: "Elsies River", postalCode: "7490" },
+        { suburb: "Matroosfontein", postalCode: "7490" }
+      ],
+      "Khayelitsha": [
+        { suburb: "Khayelitsha", postalCode: "7784" },
+        { suburb: "Site B", postalCode: "7784" },
+        { suburb: "Site C", postalCode: "7784" },
+        { suburb: "Ilitha Park", postalCode: "7784" },
+        { suburb: "Makhaza", postalCode: "7785" },
+        { suburb: "Harare", postalCode: "7784" }
+      ],
+      "Eastern": [
+        { suburb: "Somerset West", postalCode: "7130" },
+        { suburb: "Strand", postalCode: "7140" },
+        { suburb: "Gordons Bay", postalCode: "7140" },
+        { suburb: "Macassar", postalCode: "7134" },
+        { suburb: "Lwandle", postalCode: "7140" },
+        { suburb: "Nomzamo", postalCode: "7140" },
+        { suburb: "Asanda Village", postalCode: "7140" },
+        { suburb: "Rusthof", postalCode: "7140" }
+      ],
+      "Southern": [
+        { suburb: "Muizenberg", postalCode: "7945" },
+        { suburb: "Retreat", postalCode: "7945" },
+        { suburb: "Wynberg", postalCode: "7800" },
+        { suburb: "Plumstead", postalCode: "7801" },
+        { suburb: "Diep River", postalCode: "7800" },
+        { suburb: "Hout Bay", postalCode: "7806" },
+        { suburb: "Tokai", postalCode: "7945" },
+        { suburb: "Kirstenhof", postalCode: "7945" },
+        { suburb: "Grassy Park", postalCode: "7941" },
+        { suburb: "Ottery", postalCode: "7808" }
+      ],
+      "Western": [
+        { suburb: "City Bowl" },
+        { suburb: "Green Point", postalCode: "8005" },
+        { suburb: "Woodstock", postalCode: "7915" },
+        { suburb: "Bo Kaap", postalCode: "8001" },
+        { suburb: "District Six", postalCode: "7925" },
+        { suburb: "Salt River", postalCode: "7925" },
+        { suburb: "Observatory", postalCode: "7925" },
+        { suburb: "Maitland", postalCode: "7405" },
+        { suburb: "Milnerton", postalCode: "7441" },
+        { suburb: "Table View", postalCode: "7441" },
+        { suburb: "Dunoon" }
+      ],
+      "Klipfontein": [
+        { suburb: "Athlone", postalCode: "7764" },
+        { suburb: "Hanover Park", postalCode: "7780" },
+        { suburb: "Manenberg", postalCode: "7764" },
+        { suburb: "Guguletu", postalCode: "7750" },
+        { suburb: "Nyanga", postalCode: "7755" },
+        { suburb: "Crawford", postalCode: "7780" }
+      ]
+    };
+
+    const datalist = document.getElementById("suggestions");
+    for (const areas of Object.values(data)) {
+      areas.forEach(area => {
+        const option = document.createElement("option");
+        option.value = area.suburb;
+        datalist.appendChild(option);
+        if (area.postalCode) {
+          const postalOption = document.createElement("option");
+          postalOption.value = area.postalCode;
+          datalist.appendChild(postalOption);
+        }
+      });
+    }
+
+    function findSubdistrict() {
+      const input = document.getElementById("inputArea").value.trim().toLowerCase();
+      let found = false;
+      let suggestions = [];
+
+      for (const [subdistrict, areas] of Object.entries(data)) {
+        for (const area of areas) {
+          const suburbMatch = area.suburb.toLowerCase() === input;
+          const postalMatch = area.postalCode && area.postalCode === input;
+
+          if (suburbMatch || postalMatch) {
+            document.getElementById("result").innerText = `Subdistrict: ${subdistrict}${area.postalCode ? `
+Postal Code: ${area.postalCode}` : ''}`;
+            found = true;
+            break;
+          } else if (area.suburb.toLowerCase().includes(input)) {
+            suggestions.push(`${area.suburb} (${subdistrict})`);
+          }
+        }
+        if (found) break;
+      }
+
+      if (!found) {
+        const suggestionText = suggestions.length > 0 ? `Did you mean:
+- ${suggestions.join('
+- ')}` : "No matching subdistrict or postal code found.";
+        document.getElementById("result").innerText = suggestionText;
+      }
+    }
+  </script>
+</body>
+</html>
